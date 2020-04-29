@@ -1,40 +1,105 @@
 autoUpdate:
   enabled: true
-  schedule: '0 0 * * *'
+  schedule: 0 0 * * *
+bootConfigURL: https://github.com/cloudbees/arcalos-boot-config.git
 cluster:
-  clusterName: ""
-  environmentGitOwner: ""
-  project: ""
+  azure: {}
+  chartRepository: http://bucketrepo/bucketrepo/charts/
+  clusterName: shieldcliff
+  environmentGitOwner: CorinneOrg
+  environmentGitPublic: true
+  externalDNSSAName: shieldcliff-dn
+  gitKind: github
+  gitName: github
+  gitPublic: true
+  gitServer: https://github.com
+  gke:
+    projectNumber: "433802218924"
+  kanikoSAName: shieldcliff-ko
+  namespace: jx
+  project: cbjx-shieldcliff
   provider: gke
-  zone: ""
-gitops: true
-githubApp:
-  enabled: false
-  url: ""
-  schedule: '0 0 * * *'
+  registry: gcr.io
+  vaultName: shieldcliff
+  vaultSAName: shieldcliff-vt
+  zone: us-central1-c
 environments:
-- key: dev
-- key: staging
-- key: production
+- ingress:
+    cloud_dns_secret_name: external-dns-gcp-sa
+    domain: cbjx-shieldcliff.play-jxaas.live
+    domainIssuerURL: https://jx-tenant-service-jx.aps-raccoonshimmer.play-jxaas.live
+    externalDNS: true
+    namespaceSubDomain: -jx.
+    tls:
+      email: jenkins-x@cloudbees.com
+      enabled: true
+      production: false
+  key: dev
+  repository: environment-shieldcliff-dev
+- ingress:
+    domain: ""
+    externalDNS: false
+    namespaceSubDomain: ""
+    tls:
+      email: ""
+      enabled: false
+      production: false
+  key: staging
+  repository: environment-shieldcliff-staging
+- ingress:
+    domain: ""
+    externalDNS: false
+    namespaceSubDomain: ""
+    tls:
+      email: ""
+      enabled: false
+      production: false
+  key: production
+  repository: environment-shieldcliff-production
+githubApp:
+  enabled: true
+  schedule: 0 0 * * *
+  url: https://lighthouse-githubapp-jx.aps-raccoonshimmer.play-jxaas.live
+gitops: true
 ingress:
-  domain: ""
+  cloud_dns_secret_name: external-dns-gcp-sa
+  domain: cbjx-shieldcliff.play-jxaas.live
+  domainIssuerURL: https://jx-tenant-service-jx.aps-raccoonshimmer.play-jxaas.live
   externalDNS: true
+  namespaceSubDomain: -jx.
   tls:
     email: jenkins-x@cloudbees.com
     enabled: true
     production: false
 kaniko: true
+repository: bucketrepo
 secretStorage: vault
 storage:
+  backup:
+    enabled: true
+    url: gs://cbjx-shieldcliff-backup
   logs:
-    enabled: false
-    url: ""
+    enabled: true
+    url: gs://cbjx-shieldcliff-lts
   reports:
     enabled: false
     url: ""
   repository:
-    enabled: false
-    url: ""
+    enabled: true
+    url: gs://cbjx-shieldcliff-repository
+vault:
+  aws: {}
+  bucket: cbjx-shieldcliff-vault
+  key: shieldcliff-8c6c0ec083f4-crypto-key
+  keyring: shieldcliff-8c6c0ec083f4-keyring
+  name: shieldcliff
+  serviceAccount: shieldcliff-vt
 velero:
   namespace: velero
-webhook: prow
+  schedule: ""
+  serviceAccount: shieldcliff-vo
+  ttl: ""
+versionStream:
+  ref: v0.0.391
+  url: https://github.com/cloudbees/arcalos-jenkins-x-versions.git
+webhook: lighthouse
